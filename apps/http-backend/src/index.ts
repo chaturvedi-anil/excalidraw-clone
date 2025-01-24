@@ -1,6 +1,7 @@
 import express, {Request, Response} from "express";
 import jwt from "jsonwebtoken";
 import { middleware } from "./middleware";
+import { CreateUserSchema } from "@repo/common/types";
 
 const app = express();
 app.use(express.json());
