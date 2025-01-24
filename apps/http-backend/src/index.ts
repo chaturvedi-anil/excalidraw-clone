@@ -1,6 +1,5 @@
 import express, {Request, Response} from "express";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "./config";
 import { middleware } from "./middleware";
 
 const app = express();
