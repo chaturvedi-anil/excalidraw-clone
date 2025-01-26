@@ -4,6 +4,7 @@ import { middleware } from "./middleware";
 import { CreateUserSchema, SigninSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/prismaClient";
 import { JWT_SECRET } from "@repo/backend-common/config";
+import bcrypt from "bcrypt";
 
 const app = express();
 app.use(express.json());
@@ -37,12 +38,14 @@ app.post("/signup", async (req: Request, res: Response) => {
             })
             return;
         }
-
+       
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
         const newUser = await prismaClient.appUser.create({
             data: { 
                 name,
                 username, 
-                password 
+                password: hashedPassword 
             },
             select: {
                 id: true, name: true, username: true
@@ -88,20 +91,24 @@ app.post("/signin", async (req: Request, res: Response) => {
                 password: true
             }
         });
+    
+        if (isUserPresent) {
+            const isPasswordCorrect = await bcrypt.compare(password, isUserPresent?.password);
+            
+            if (isPasswordCorrect) {
+                const token = jwt.sign({userId: isUserPresent.id}, JWT_SECRET);
 
-        if (!isUserPresent || isUserPresent.password !== password) {
+                res.status(201).json({
+                    message:"signin successfully!",
+                    token: token
+                });
+            }   
+        } else {
             res.status(401).json({
                 message: "Invalid username/password!"
             })
             return;
         }
-        
-        const token = jwt.sign({userId: isUserPresent.id}, JWT_SECRET);
-
-        res.status(201).json({
-            message:"signin successfully!",
-            token: token
-        });
         
     } catch (error) {
         res.status(500).json({
