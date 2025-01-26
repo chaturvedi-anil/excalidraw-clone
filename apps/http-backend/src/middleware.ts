@@ -10,7 +10,7 @@ export const middleware = (req: Request, res: Response, next: NextFunction) => {
     
     if (decoded) {
         // @ts-ignore
-        req.headers.userId = decoded.userId;
+        req.userId = decoded.userId;
         next(); 
     } else {
         res.status(401).json({

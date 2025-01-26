@@ -1,7 +1,7 @@
 import express, {Request, Response} from "express";
 import jwt from "jsonwebtoken";
 import { middleware } from "./middleware";
-import { CreateUserSchema, SigninSchema } from "@repo/common/types";
+import { CreateUserSchema, SigninSchema, CreateRoomSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/prismaClient";
 import { JWT_SECRET } from "@repo/backend-common/config";
 import bcrypt from "bcrypt";
@@ -118,18 +118,46 @@ app.post("/signin", async (req: Request, res: Response) => {
     }
 })
 
-app.post("/create-room", middleware ,(req: Request, res: Response) => {
+app.post("/create-room", middleware , async (req: Request, res: Response) => {
     try {
-        const { roomId } = req.body;
-        console.log("create room : ", req.headers);
-        
-        // TODO db call
-        
-        res.status(201).json({
-            roomId: 123,
-            message:"room created successfully!"
+        const roomNameData = CreateRoomSchema.safeParse(req.body);
+
+        if (!roomNameData.success) {
+            res.status(400).json({
+                message: "Incorrect Input",
+                error: roomNameData.error?.message
+            });
+            return;
+        }
+        const isRoomPresent = await prismaClient.room.findFirst({
+            where: {
+                slug: roomNameData.data?.name
+            }
         })
-        
+
+        if (isRoomPresent) {
+            res.status(400).json({
+                message:`Room already exists with ${roomNameData.data.name} name!`
+            })
+            return;  
+        } 
+
+        //@ts-ignore
+        const userId = req.userId;
+        if (userId) {
+            const newRoom = await prismaClient.room.create({
+                data:{
+                    slug: roomNameData.data?.name,
+                    adminId: userId
+                }
+            });
+
+            res.status(201).json({
+                roomId: newRoom.id,
+                message:"room created successfully!"
+            })
+        }
+         
     } catch (error) {
         res.status(500).json({
             message: "Internal Server Error!"
