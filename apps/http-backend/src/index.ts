@@ -189,4 +189,24 @@ app.get("/chats/:roomId" , async (req: Request, res: Response) => {
     }
 })
 
+app.get("/room/:slug" , async (req: Request, res: Response) => {
+    try {        
+        const slug = req.params.slug;
+
+        const room = await prismaClient.room.findMany({
+            where:{
+                slug
+            }
+        }) 
+
+        res.json({
+            room: room
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal Server Error!"
+        })
+    }
+})
+
 app.listen(3001);
