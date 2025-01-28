@@ -1,24 +1,19 @@
 import axios from 'axios';
-import React from 'react'
 import { BACKEND_URL } from '../../config';
+import ChatRoom from '../../components/ChatRoom';
 
 const getRoomId = async (slug: string) => {
     const getIdResponse = await axios.get(`${BACKEND_URL}/room/${slug}`);
-    console.log("getIdResponse : ", getIdResponse);
     
-    return getIdResponse.data.id;
+    return getIdResponse.data.roomId;
 }
 
-const ChatRoom = async ({params}: {params: {slug: string}}) => {
-    console.log("reacher chatroom : ", params.slug);
-    
-    const slug = params.slug;
+const page = async ({params}: {params: {slug: string}}) => {
+
+    const slug = (await params).slug;
     const roomId = await getRoomId(slug);
-    console.log("roomId : ", roomId);
 
-    return <div>
-        ChatRoom
-    </div>
+    return <ChatRoom id={roomId} />
 }
 
-export default ChatRoom
+export default page

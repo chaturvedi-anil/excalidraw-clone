@@ -7,9 +7,7 @@ const Dashboard = () => {
   const [slug, setSlug] = useState("");
   const router = useRouter();
   const handleRoomJoin = () => {
-    // router.push(`http://localhost:3001/room/${slug}`);
-    // router.push(`/room/chat-room`);
-    router.push(`http://localhost:3001/room/${slug}`);
+    router.push(`/room/${slug}`);
   }
   return (
     <div>

@@ -193,14 +193,14 @@ app.get("/room/:slug" , async (req: Request, res: Response) => {
     try {        
         const slug = req.params.slug;
 
-        const room = await prismaClient.room.findMany({
+        const room = await prismaClient.room.findFirst({
             where:{
                 slug
             }
         }) 
 
         res.json({
-            room: room
+            roomId: room?.id
         })
     } catch (error) {
         res.status(500).json({
