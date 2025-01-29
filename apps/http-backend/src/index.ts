@@ -5,9 +5,11 @@ import { CreateUserSchema, SigninSchema, CreateRoomSchema } from "@repo/common/t
 import { prismaClient } from "@repo/db/prismaClient";
 import { JWT_SECRET } from "@repo/backend-common/config";
 import bcrypt from "bcrypt";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
+app.use(cors({origin: "http://localhost:3000"}));
 
 app.get("/ping", (req: Request, res: Response) => {
     res.send("http server");
@@ -91,7 +93,7 @@ app.post("/signin", async (req: Request, res: Response) => {
                 password: true
             }
         });
-    
+        
         if (isUserPresent) {
             const isPasswordCorrect = await bcrypt.compare(password, isUserPresent?.password);
             
@@ -102,7 +104,13 @@ app.post("/signin", async (req: Request, res: Response) => {
                     message:"signin successfully!",
                     token: token
                 });
-            }   
+                return;
+            } else {
+                res.status(401).json({
+                    message: "Invalid username/password!"
+                })
+                return;
+            }
         } else {
             res.status(401).json({
                 message: "Invalid username/password!"

@@ -14,7 +14,6 @@ const page = () => {
 
   const handleSignup = async () => { 
     // @ts-ignore
-    console.log(nameRef.current?.value, usernameRef.current.value, passwordRef.current.value);
     router.push("/signin");
   }
   return (

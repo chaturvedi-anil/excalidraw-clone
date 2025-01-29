@@ -12,7 +12,7 @@ export const ChatRoomClient = ({messages, id}: {messages: {message: string}[], i
         socket?.send(JSON.stringify({
             "type": "chat",
             "roomId": id,
-            "messages": currentMessage 
+            "message": currentMessage 
         }))
 
         setCurrentMessage("");
@@ -30,7 +30,7 @@ export const ChatRoomClient = ({messages, id}: {messages: {message: string}[], i
             socket.onmessage = (event) => {
                 const parshedData = JSON.parse(event.data);
                 if(parshedData.type === "chat"){
-                    setchats(c => [...c, parshedData.message]);
+                    setchats(c => [...c, {message: parshedData.message}]);
                 }
             }
         }
@@ -39,7 +39,7 @@ export const ChatRoomClient = ({messages, id}: {messages: {message: string}[], i
     return (
         <div>
            <div>
-                {messages.map((m, index) => (
+                {chats.map((m, index) => (
                         <div key={index}>{m.message}</div>
                 ))}
            </div>

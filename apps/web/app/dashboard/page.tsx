@@ -7,7 +7,7 @@ const Dashboard = () => {
   const [slug, setSlug] = useState("");
   const router = useRouter();
   const handleRoomJoin = () => {
-    router.push(`/room/${slug}`);
+    router.push(`/room/${slug.trim()}`);
   }
   return (
     <div>

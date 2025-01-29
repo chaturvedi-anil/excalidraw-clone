@@ -3,16 +3,41 @@
 import { useRef, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { SigninSchema } from "@repo/common/types"; 
+import { BACKEND_URL } from "../../config";
 
 const page = () => {
-  const usernameRef = useRef(null);
-  const passwordRef = useRef(null);
+  const usernameRef = useRef("");
+  const passwordRef = useRef("");
   const router = useRouter();
 
   const handleSignIn = async () => { 
-    // @ts-ignore
-    console.log(usernameRef.current.value, passwordRef.current.value);
-    router.push("/dashboard");
+    try {
+      //@ts-ignore
+      const username = usernameRef.current?.value;
+      //@ts-ignore
+      const password = passwordRef.current?.value;
+
+      const parshedData = SigninSchema.safeParse({username, password});
+
+      if (!parshedData.success) {
+        alert(`error : ${parshedData.error.message}`);
+        return;
+      }
+      
+      const signinResponse = await axios.post(`${BACKEND_URL}/signin`, {username, password});   
+      if (signinResponse.data.token) {
+        router.push("/dashboard");
+      }  
+    } catch (error) {
+      if(axios.isAxiosError(error) && error.response?.status === 401){
+        console.error("Unauthorized: Invalid credentials");
+        alert(`Error: ${error.response.data.message}`);
+      } else {
+        console.error("Sign-in error:", error);
+        alert("An unexpected error occurred.");
+      }
+    }
   }
   return (
     <div>
