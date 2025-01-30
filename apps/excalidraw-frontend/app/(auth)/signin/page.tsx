@@ -40,7 +40,7 @@ const page = () => {
     }
   }
   return (
-    <div>
+    <div className="main-container">
       <div>
         <h1>signIn</h1>
         <input type="text" ref={usernameRef} placeholder="Enter username"/>
