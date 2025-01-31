@@ -4,15 +4,18 @@ import { ReactNode } from "react";
 
 interface ButtonProps {
   children: ReactNode;
+  variant?: string,
   className?: string;
-  appName: string;
+  onClickHandler?: () => void,
+  disabled?: boolean
 }
 
-export const Button = ({ children, className, appName }: ButtonProps) => {
+export const Button = ({ children, className, variant, onClickHandler, disabled}: ButtonProps) => {
   return (
     <button
-      className={className}
-      onClick={() => alert(`Hello from your ${appName} app!`)}
+      className={`${className} ${variant}`}
+      onClick={onClickHandler}
+      disabled={disabled}
     >
       {children}
     </button>
