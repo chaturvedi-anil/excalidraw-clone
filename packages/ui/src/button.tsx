@@ -13,7 +13,7 @@ interface ButtonProps {
 export const Button = ({ children, className, variant, onClickHandler, disabled}: ButtonProps) => {
   return (
     <button
-      className={`${className} ${variant}`}
+      className={`${className} ${variant ?? variant}`}
       onClick={onClickHandler}
       disabled={disabled}
     >

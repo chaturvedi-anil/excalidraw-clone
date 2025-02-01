@@ -72,5 +72,5 @@ export default function Home() {
         &copy; 2024 Excalidraw Clone. All rights reserved.
       </footer>
     </div>
-  );
+  );  
 }
