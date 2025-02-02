@@ -6,15 +6,15 @@ interface ButtonProps {
   children: ReactNode;
   variant?: string,
   className?: string;
-  onClickHandler?: () => void,
+  onClick?: () => void,
   disabled?: boolean
 }
 
-export const Button = ({ children, className, variant, onClickHandler, disabled}: ButtonProps) => {
+export const Button = ({ children, className, variant, onClick, disabled}: ButtonProps) => {
   return (
     <button
       className={`${className} ${variant ?? variant}`}
-      onClick={onClickHandler}
+      onClick={onClick}
       disabled={disabled}
     >
       {children}
