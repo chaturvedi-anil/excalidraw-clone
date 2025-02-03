@@ -4,18 +4,19 @@ import { ReactNode } from "react";
 
 interface ButtonProps {
   children: ReactNode;
-  variant?: string,
+  variant: "primary" | "secondary",
   className?: string;
   onClick?: () => void,
-  disabled?: boolean
 }
-
-export const Button = ({ children, className, variant, onClick, disabled}: ButtonProps) => {
+const variants={
+  "primary" : "rounded-md px-5 py-2 w-full text-xl mt-4 bg-black text-white font-semibold",
+  "secondary" : "rounded-md px-5 py-2 w-full text-xl mt-4 outline text-black font-semibold" 
+}
+export const Button = ({ children, className, variant, onClick}: ButtonProps) => {
   return (
     <button
-      className={`${className} ${variant ?? variant}`}
+      className={`${variants[variant]}`}
       onClick={onClick}
-      disabled={disabled}
     >
       {children}
     </button>

@@ -10,9 +10,8 @@ import {
   FiLinkedin as Linkedin 
 } from "react-icons/fi";
 
-import Link from 'next/link';
 
-const Page =() => {
+function App() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -24,14 +23,10 @@ const Page =() => {
               <span className="ml-2 text-xl font-bold text-gray-900">DrawFlow</span>
             </div>
             <div className="flex items-center gap-4">
-              <Link href={"/signin"} target='_blank'> 
-                <button className="px-4 py-2 text-gray-600 outline outline-1 outline-blue-700 rounded-lg hover:text-gray-900">Sign In</button> 
-              </Link>
-              <Link href={"/signup"} target='_blank'>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                  Sign Up Free
-                </button>
-              </Link>
+              <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Sign In</button>
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                Sign Up Free
+              </button>
             </div>
           </div>
         </div>
@@ -50,31 +45,36 @@ const Page =() => {
             <button className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-lg">
               Start Drawing
             </button>
-            <button className="px-8 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-lg text-black">
+            <button className="px-8 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-lg">
               Watch Demo
             </button>
           </div>
+          <img 
+            src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=2000&q=80"
+            alt="Collaborative drawing" 
+            className="mt-12 rounded-lg shadow-2xl w-full"
+          />
         </div>
       </section>
 
       {/* Features Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-black mb-12">Why Choose DrawFlow?</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Why Choose DrawFlow?</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-6 bg-white rounded-lg shadow-sm">
               <Share2 className="h-12 w-12 text-blue-600 mb-4" />
-              <h3 className="text-xl font-semibold mb-2 text-black">Real-time Collaboration</h3>
+              <h3 className="text-xl font-semibold mb-2">Real-time Collaboration</h3>
               <p className="text-gray-600">Work together with your team in real-time. See changes instantly as they happen.</p>
             </div>
             <div className="p-6 bg-white rounded-lg shadow-sm">
               <Users className="h-12 w-12 text-blue-600 mb-4" />
-              <h3 className="text-xl font-semibold mb-2 text-black">Team Friendly</h3>
+              <h3 className="text-xl font-semibold mb-2">Team Friendly</h3>
               <p className="text-gray-600">Perfect for teams of any size. Share and organize your diagrams effortlessly.</p>
             </div>
             <div className="p-6 bg-white rounded-lg shadow-sm">
               <Lock className="h-12 w-12 text-blue-600 mb-4" />
-              <h3 className="text-xl font-semibold mb-2 text-black">Secure by Default</h3>
+              <h3 className="text-xl font-semibold mb-2">Secure by Default</h3>
               <p className="text-gray-600">Your diagrams are encrypted and secure. Control who can view and edit.</p>
             </div>
           </div>
@@ -84,7 +84,7 @@ const Page =() => {
       {/* Reviews Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12 text-black">Loved by Thousands</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Loved by Thousands</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-6 bg-gray-50 rounded-lg">
               <p className="text-gray-600 mb-4">"The best whiteboarding tool I've ever used. Simple yet powerful."</p>
@@ -95,7 +95,7 @@ const Page =() => {
                   className="h-12 w-12 rounded-full"
                 />
                 <div className="ml-3">
-                  <p className=" text-black">John Doe</p>
+                  <p className="font-semibold">John Doe</p>
                   <p className="text-sm text-gray-500">Product Designer</p>
                 </div>
               </div>
@@ -109,7 +109,7 @@ const Page =() => {
                   className="h-12 w-12 rounded-full"
                 />
                 <div className="ml-3">
-                  <p className="text-black">Jane Smith</p>
+                  <p className="font-semibold">Jane Smith</p>
                   <p className="text-sm text-gray-500">Team Lead</p>
                 </div>
               </div>
@@ -123,7 +123,7 @@ const Page =() => {
                   className="h-12 w-12 rounded-full"
                 />
                 <div className="ml-3">
-                  <p className="text-black">Mike Johnson</p>
+                  <p className="font-semibold">Mike Johnson</p>
                   <p className="text-sm text-gray-500">Software Engineer</p>
                 </div>
               </div>
@@ -135,7 +135,7 @@ const Page =() => {
       {/* FAQ Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12 text-black">Frequently Asked Questions</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {[
               {
@@ -157,7 +157,7 @@ const Page =() => {
             ].map((faq, index) => (
               <div key={index} className="bg-white p-6 rounded-lg">
                 <button className="flex justify-between items-center w-full text-left">
-                  <span className="text-black font-semibold">{faq.q}</span>
+                  <span className="font-semibold">{faq.q}</span>
                   <ChevronDown className="h-5 w-5 text-gray-500" />
                 </button>
                 <p className="mt-2 text-gray-600">{faq.a}</p>
@@ -212,4 +212,4 @@ const Page =() => {
   );
 }
 
-export default Page;
+export default App;
