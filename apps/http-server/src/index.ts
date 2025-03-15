@@ -1,5 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken"; 
+import { authMiddleware } from "./middleware";
 
 const app = express();
 
@@ -25,6 +26,13 @@ app.post("/signin", (req, res) => {
     }
 });
 
+app.post("/room", authMiddleware, (req, res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+})
 
 app.listen(3001, (err) => {
     if (err) {
