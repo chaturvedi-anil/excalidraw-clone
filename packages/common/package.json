@@ -9,6 +9,9 @@
     "@repo/typescript-config": "workspace:*",
     "zod": "^3.24.2"
   },
+  "exports": {
+    "./types": "./src/index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
