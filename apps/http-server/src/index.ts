@@ -14,9 +14,21 @@ app.get("/ping", (req, res) => {
 
 app.post("/signup", (req, res) => {
     try {
+        const data = signupSchema.safeParse(req.body);
+        if(!data.success){
+            res.json({
+                message: data.error.message
+            })
+            return;
+        }
         
+        res.json({
+            message: "signup completed successfully!"
+        })
     } catch (error) {
-        
+        res.json({
+            message: "Internal Server Error!"
+        })
     }
 });
 

@@ -6,7 +6,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.13.9"
+  },
+  "exports":{
+    "./config": "./src/index.ts"
   },
   "keywords": [],
   "author": "",
