@@ -1,8 +1,10 @@
 import express from "express";
 import jwt from "jsonwebtoken"; 
+import bcrypt from "bcrypt";
+
 import { authMiddleware } from "./middleware";
 import { signupSchema, signinSchema } from "@repo/common/types";
-
+import { prismaClient } from "@repo/db/prismaClient";
 
 const app = express();
 
@@ -12,21 +14,54 @@ app.get("/ping", (req, res) => {
     res.json({message: "pong"});
 });
 
-app.post("/signup", (req, res) => {
+app.post("/signup", async (req, res) => {
     try {
         const data = signupSchema.safeParse(req.body);
         if(!data.success){
-            res.json({
+            res.status(400).json({
                 message: data.error.message
             })
             return;
+        } 
+
+        const isUserExist = await prismaClient.appUser.findUnique(
+            {
+                where:{
+                    email: data.data.email
+                }
+            }
+        )
+
+        if(isUserExist){
+            res.status(409).json({
+                message: `user already exist with ${data.data.email} email!`
+            })
+            return
         }
-        
-        res.json({
-            message: "signup completed successfully!"
-        })
+
+        const hashPassword = await bcrypt.hash(data.data.password, 10);
+
+        if (hashPassword) {
+            const newUser = await prismaClient.appUser.create({
+                data: {
+                    name: data.data.name,
+                    email: data.data.email,
+                    password: hashPassword
+                }
+            })
+            
+            if(newUser){
+                
+                res.status(201).json({
+                    message: "signup completed successfully!"
+                })
+            }
+            
+        }
+
     } catch (error) {
-        res.json({
+        console.error("Signuo Erro : ", error);
+        res.status(500).json({
             message: "Internal Server Error!"
         })
     }
