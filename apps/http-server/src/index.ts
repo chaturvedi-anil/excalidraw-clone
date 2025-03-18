@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import { authMiddleware } from "./middleware";
-import { signupSchema, signinSchema } from "@repo/common/types";
+import { SigninSchema, SignupSchema, CreateRoomSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/prismaClient";
 import { JWT_SECRET } from "@repo/backend-common/config";
 
@@ -17,7 +17,7 @@ app.get("/ping", (req, res) => {
 
 app.post("/signup", async (req, res) => {
     try {
-        const data = signupSchema.safeParse(req.body);
+        const data = SignupSchema.safeParse(req.body);
         if(!data.success){
             res.status(400).json({
                 message: data.error.message
@@ -35,7 +35,7 @@ app.post("/signup", async (req, res) => {
 
         if(isUserExist){
             res.status(409).json({
-                message: `user already exist with ${data.data.email} email!`
+                message: `User already exists with ${data.data.email} email!`
             })
             return
         }
@@ -54,7 +54,7 @@ app.post("/signup", async (req, res) => {
             if(newUser){
                 
                 res.status(201).json({
-                    message: "signup completed successfully!"
+                    message: "Signup completed successfully!"
                 })
             }
             
@@ -70,7 +70,7 @@ app.post("/signup", async (req, res) => {
 
 app.post("/signin", async (req, res) => {
     try {
-        const data = signinSchema.safeParse(req.body);
+        const data = SigninSchema.safeParse(req.body);
         
         if (!data.success) {
             res.status(400).json({
@@ -123,9 +123,46 @@ app.post("/signin", async (req, res) => {
     }
 });
 
-app.post("/room", authMiddleware, (req, res) => {
+app.post("/room", authMiddleware, async(req, res) => {
     try {
+        const data = CreateRoomSchema.safeParse(req.body);
+
+        if (!data.success) {
+            res.status(400).json({
+                message: data.error.message
+            })
+            return;
+        }
+
+        //@ts-ignore
+        const userId = req.userId;
+        const isRoomPresent = await prismaClient.room.findUnique({where: {slug: data.data.slug}});
         
+        if(isRoomPresent){
+            res.status(409).json({
+                message: `Room already exists with this name!`
+            })
+            return;
+        }
+
+        const isRoomCreated = await prismaClient.room.create({
+            data:{
+                slug: data.data.slug,
+                adminId: userId
+            }
+        })
+
+        if (!isRoomCreated) {
+            res.status(500).json({
+                message: "Failed to create room. Please try again."
+            });
+            return;
+        }
+
+        res.status(201).json({
+            message: `Room created with name ${isRoomCreated.slug}`,
+            roomId: isRoomCreated.id
+        });
     } catch (error) {
         console.error("Room Error : ", error);
         res.status(500).json({
