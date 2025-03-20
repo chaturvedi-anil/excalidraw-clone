@@ -58,6 +58,7 @@ wss.on("connection", (ws, request) => {
     ws.on("message", async (data) => {
         try {
             const parsedData = JSON.parse(data.toString());
+            
             if (parsedData.type === "ping") {
                 ws.send("pong");
                 return;
@@ -109,20 +110,31 @@ wss.on("connection", (ws, request) => {
 
             // chat
             if (parsedData.type === "chat") {
-                users.map((user) => {
-                    if (user.ws !== ws && user.rooms.includes(roomId)) {
-                        user.ws.send(JSON.stringify({
-                            type: "chat",
-                            roomId: roomId,
-                            message: parsedData.message,
-                            
-                        }))
+                const isChatAdded = await prismaClient.chat.create({
+                    data:{
+                        roomId,
+                        message: parsedData.message,
+                        userId
                     }
                 })
+
+                if (isChatAdded) {
+                    users.map((user) => {
+                        if (user.ws !== ws && user.rooms.includes(roomId)) {
+                            user.ws.send(JSON.stringify({
+                                type: "chat",
+                                roomId: roomId,
+                                message: parsedData.message,
+                                
+                            }))
+                        }
+                    })
+                }
             }
 
             
         } catch (error) {
+            console.error("Ws error : ", error);
             ws.send(JSON.stringify({message: "Invalid message format!!"}));
         }
     });
