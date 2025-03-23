@@ -32,9 +32,9 @@ const checkUser = (token: string): string | null => {
 }
 wss.on("connection", (ws, request) => {
 
-    const url = request.url;   //ex:  ws://localhost:3000?token=123123
+    const url = request.url;   //ex:  ws://localhost:8000?token=123123
 
-    //url = ["ws://localhost:3000", "?token=123123"];
+    //url = ["ws://localhost:8000", "?token=123123"];
 
     if(!url){
         return;

@@ -200,10 +200,10 @@ app.get("/room/:slug", async(req, res) => {
 })
 
 
-app.listen(3001, (err) => {
+app.listen(8000, (err) => {
     if (err) {
         console.error(`error in running http server : ${err}`);
     }
 
-    console.log(`express server is running on port 3000`);
+    console.log(`express server is running on port 8000`);
 });     
