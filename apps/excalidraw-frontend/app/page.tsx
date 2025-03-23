@@ -1,8 +1,11 @@
 "use client";
-import React from 'react';
+
+import { Button } from '@repo/ui/button';
 import { Pencil, Share2, Users, Sparkles, Palette, Layers, Zap, ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 function Navbar() {
+  const router = useRouter()
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md border-b border-gray-200/80 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,12 +19,12 @@ function Navbar() {
             </span>
           </div>
           <div className="flex items-center space-x-6">
-            <button className="px-5 py-2.5 text-gray-600 hover:text-gray-900 font-medium transition-colors">
+            <button className="cursor-pointer px-5 py-2.5 text-gray-600 hover:text-gray-900 font-medium transition-colors"
+              onClick={() => router.push("/signin")}
+            >
               Sign In
             </button>
-            <button className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium shadow-md shadow-indigo-100 hover:shadow-lg hover:shadow-indigo-200 transition-all hover:-translate-y-0.5 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-              Sign Up Free
-            </button>
+            <Button variant='primary' size='md' onClick={() => router.push('/signup')}> Sign Up Free</Button>
           </div>
         </div>
       </div>
@@ -116,9 +119,7 @@ function App() {
                 Start Drawing Now
                 <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="px-8 py-4 bg-white text-gray-700 rounded-xl text-lg font-medium border border-gray-200 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm hover:shadow-md">
-                Watch Demo
-              </button>
+              <Button size='md' variant='secondary'> Watch Demo</Button>
             </div>
           </div>
         </div>
