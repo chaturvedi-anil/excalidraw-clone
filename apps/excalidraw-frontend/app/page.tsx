@@ -4,8 +4,10 @@ import { Button } from '@repo/ui/button';
 import { Pencil, Share2, Users, Sparkles, Palette, Layers, Zap, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-function Navbar() {
-  const router = useRouter()
+type routerType = {
+  router: ReturnType<typeof useRouter>
+}
+function Navbar({router} : routerType) {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md border-b border-gray-200/80 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,9 +93,10 @@ function Footer() {
 }
 
 function App() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50/50">
-      <Navbar />
+      <Navbar router={router} />
       
       {/* Hero Section */}
       <div className="pt-40 pb-24 sm:pt-48 sm:pb-32">
@@ -115,7 +118,10 @@ function App() {
               Perfect for teams, designers, and anyone who wants to bring their ideas to life.
             </p>
             <div className="mt-12 flex flex-col sm:flex-row gap-5 justify-center">
-              <button className="group px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-lg font-medium shadow-md shadow-indigo-100 hover:shadow-xl hover:shadow-indigo-200 transition-all hover:-translate-y-0.5 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 inline-flex items-center justify-center">
+              <button 
+                className="group px-8 py-4 cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-lg font-medium shadow-md shadow-indigo-100 hover:shadow-xl hover:shadow-indigo-200 transition-all hover:-translate-y-0.5 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 inline-flex items-center justify-center"
+                onClick={() => router.push("/signup")}
+              >
                 Start Drawing Now
                 <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>

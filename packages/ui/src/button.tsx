@@ -6,12 +6,12 @@ interface ButtonProps {
   children: ReactNode;
   variant: "primary" | "secondary",
   size: "sm" | "md" | "lg" | "xl",
-  onClick?: () => void  
+  onClick?: () => void, 
 }
 
 const  buttonVariants = {
   "primary": "cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-indigo-100 font-medium rounded shadow-md hover:shadow-lg hover:shadow-indigo-200 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
-  "secondary": "cursor-pointer bg-white text-gray-700 font-medium rounded border border-gray-200 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm hover:shadow-md"
+  "secondary": "cursor-pointer bg-white text-gray-700 font-medium rounded border border-gray-200 hover:text-indigo-600 hover:border-indigo-600 transition-all"
 } 
 
 const buttonSizes = {
