@@ -1,6 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken"; 
 import bcrypt from "bcrypt";
+import cors from "cors";
 
 import { authMiddleware } from "./middleware";
 import { SigninSchema, SignupSchema, CreateRoomSchema } from "@repo/common/types";
@@ -10,6 +11,9 @@ import { JWT_SECRET } from "@repo/backend-common/config";
 const app = express();
 
 app.use(express.json());
+app.use(cors({
+    origin: "http://localhost:3001/"
+}))
 
 app.get("/ping", (req, res) => {
     res.json({message: "pong"});
@@ -174,7 +178,7 @@ app.post("/room", authMiddleware, async(req, res) => {
 
 app.get("/chats/:roomId", async(req, res) => {
     const roomId = Number(req.params.roomId);
-
+    
     const messages = await prismaClient.chat.findMany({
         where: {
             roomId: roomId
@@ -184,7 +188,7 @@ app.get("/chats/:roomId", async(req, res) => {
         },
         take: 50
     })
-
+    
     res.json({messages})
 })
 
