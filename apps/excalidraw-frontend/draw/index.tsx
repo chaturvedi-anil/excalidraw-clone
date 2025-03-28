@@ -14,7 +14,7 @@ type Shape = {
     radius: number
 }
 
-export async function initDraw(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
+export async function initDraw(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket) {
     const ctx = canvas.getContext("2d");
 
     let existingShapes: Shape[] = await getExistingShapes(roomId);
@@ -28,7 +28,7 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId: string, socket
 
         if(message.type == "chat"){
             const parsedShape = JSON.parse(message.message);
-            existingShapes.push(parsedShape);
+            existingShapes.push(parsedShape.shape);
 
             clearCanvas(existingShapes, canvas, ctx);
         }
@@ -57,7 +57,12 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId: string, socket
             height: height
         }
         existingShapes.push(shape);
-        socket.send(JSON.stringify({shape}));
+        
+        socket.send(JSON.stringify({
+            type: "chat",
+            message: JSON.stringify({shape}),
+            roomId
+        }));
     });
 
     canvas.addEventListener("mousemove", (e) => {
@@ -79,7 +84,7 @@ function clearCanvas(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: Ca
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "rgba(0, 0, 0)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+    
     existingShapes && existingShapes.map((shape) => {
         if(shape.type === "rect") {
             ctx.strokeStyle = "rgba(255, 255, 255)";
@@ -88,14 +93,14 @@ function clearCanvas(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: Ca
     })
 }
 
-async function getExistingShapes(roomId: string)    {
+async function getExistingShapes(roomId: number)    {
     try {
-        const res = await axios.get(`${HTTP_URL}/chats/${roomId}`);
+        const res = await axios.get(`${HTTP_URL}/chats/${roomId}`);    
         const messages = res.data?.messages;
 
         const shapes = messages?.map((x: {message: string }) => {
             const messageData = JSON.parse(x.message);
-            return messageData;
+            return messageData.shape;
         })  
         
         return shapes;

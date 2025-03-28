@@ -80,7 +80,7 @@ wss.on("connection", (ws, request) => {
 
             const isRoomPresent = await prismaClient.room.findUnique({
                 where: {
-                    id: parsedData.roomId,
+                    id: Number(parsedData.roomId),
                 }
             })
 
@@ -112,7 +112,7 @@ wss.on("connection", (ws, request) => {
             if (parsedData.type === "chat") {
                 const isChatAdded = await prismaClient.chat.create({
                     data:{
-                        roomId,
+                        roomId: Number(roomId),
                         message: parsedData.message,
                         userId
                     }

@@ -4,7 +4,7 @@ import { WS_URL } from '@/app/config';
 import { useEffect, useRef, useState} from 'react'
 import { Canvas } from './Canvas';
 
-export function RoomCanvas({roomId} : {roomId: string}) {
+export function RoomCanvas({roomId} : {roomId: number}) {
    
     const [socket, setSocket] = useState<WebSocket | null>(null);
 
