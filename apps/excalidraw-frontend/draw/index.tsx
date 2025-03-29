@@ -105,7 +105,7 @@ async function getExistingShapes(roomId: number)    {
         
         return shapes;
     } catch (error) {
-        console.log("getExisitngshapes error : ", error);
+        // console.log("getExisitngshapes error : ", error);
         return;
     }
 }
