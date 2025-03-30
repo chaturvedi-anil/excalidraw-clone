@@ -16,6 +16,11 @@ export default async function ChatRoom1(
     const slug =(await params).slug;
     const roomId =  await getRoomId(slug);
 
+    if (!roomId) {
+        alert(`roomID : ${roomId}`);
+        return;
+    }
+
     return <ChatRoom id={roomId}/>
     
 }

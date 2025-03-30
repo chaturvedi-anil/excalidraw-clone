@@ -130,7 +130,7 @@ app.post("/signin", async (req, res) => {
 app.post("/room", authMiddleware, async(req, res) => {
     try {
         const data = CreateRoomSchema.safeParse(req.body);
-
+        
         if (!data.success) {
             res.status(400).json({
                 message: data.error.message
@@ -204,10 +204,19 @@ app.get("/room/:slug", async(req, res) => {
 })
 
 
-app.listen(8000, (err) => {
+app.listen(8000, async (err) => {
     if (err) {
-        console.error(`error in running http server : ${err}`);
+        console.error(`Error in running HTTP server: ${err}`);
+        return;
     }
 
-    console.log(`express server is running on port 8000`);
-});     
+    try {
+        await prismaClient.$connect(); 
+        console.log("Prisma Client is connected!");
+    } catch (error) {
+        console.error("Prisma Client connection failed:", error);
+        process.exit(1); 
+    }
+
+    console.log(`Express server is running on port 8000`);
+});
