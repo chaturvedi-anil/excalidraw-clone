@@ -10,8 +10,14 @@ type Shape = {
 } | {
     type: "circle",
     centerX: number,
-    cneterY: number,
+    centerY: number,
     radius: number
+} | {
+    type: "pencil",
+    startX: number,
+    startY: number,
+    endX: number, 
+    endY: number
 }
 
 export async function initDraw(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket) {
@@ -49,15 +55,37 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId: number, socket
         clicked = false;
         const width = e.clientX - startX;
         const height = e.clientY - startY;
-        const shape: Shape = {
-            type: "rect",
-            x: startX,
-            y: startY,
-            width: width,
-            height: height
+        let shape: Shape | null = null;
+
+        // Ensure correct starting point for negative width/height
+        const correctedX = width < 0 ? startX + width : startX;
+        const correctedY = height < 0 ? startY + height : startY
+
+        // @ts-ignore
+        const selectedTool = window.selectedTool;
+
+        if (selectedTool === "rect") {
+            shape = {
+                type: "rect",
+                x: correctedX,
+                y: correctedY,
+                width: Math.abs(width),
+                height: Math.abs(height)
+            }
+        } else if (selectedTool === "circle") {
+            const radius = Math.abs(Math.max(width, height) / 2); 
+            shape = {
+                type: "circle",
+                centerX: correctedX + radius,
+                centerY: correctedY + radius,
+                radius: radius
+            }
         }
-        existingShapes.push(shape);
         
+        if(!shape) return;
+
+        existingShapes.push(shape);
+
         socket.send(JSON.stringify({
             type: "chat",
             message: JSON.stringify({shape}),
@@ -71,11 +99,25 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId: number, socket
             const height = e.clientY - startY;
 
             clearCanvas(existingShapes, canvas, ctx);
-
             ctx.strokeStyle = "rgba(255, 255, 255)";
-            ctx.strokeRect(startX, startY, width, height);
-            // ctx?.strokeRect(250, 250, 200, 100);
-            // canvasFunctionArgu(starting left, starting top, width, height)
+
+            // @ts-ignore
+            const selectedTool = window.selectedTool;
+
+            if(selectedTool === "rect"){
+                ctx.strokeRect(startX, startY, width, height);
+            } else if (selectedTool === "circle") {
+                const centerX = startX + width / 2;
+                const centerY = startY + height / 2;
+                const radius = Math.abs(Math.max(width, height) / 2);
+                ctx.beginPath();
+                
+                ctx.arc(centerX, centerY, radius,  0, Math.PI * 2);
+                ctx.stroke();
+               
+            } else if (selectedTool === "pencil") {
+
+            }
         }
     });
 }
@@ -89,6 +131,11 @@ function clearCanvas(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: Ca
         if(shape.type === "rect") {
             ctx.strokeStyle = "rgba(255, 255, 255)";
             ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
+        } else if(shape.type === "circle"){
+            ctx.beginPath();
+            ctx.arc(shape.centerX, shape.centerY, shape.radius,  0, Math.PI * 2);
+            ctx.stroke();
+            
         }
     })
 }

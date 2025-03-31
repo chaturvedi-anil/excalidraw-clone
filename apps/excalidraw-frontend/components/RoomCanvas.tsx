@@ -25,11 +25,7 @@ export function RoomCanvas({roomId} : {roomId: number}) {
             Connecting to server...
         </div>
     }
-    return (<div className='bg-white'>
-        <div className=''>
-            <button></button>
-        </div>
+    return (
         <Canvas roomId={roomId} socket={socket}/>
-    </div>
     )
 }
