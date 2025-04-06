@@ -26,7 +26,7 @@ export function Canvas({roomId, socket} : {roomId: number, socket: WebSocket}) {
     }, [canvasRef]);
     return(
         <div>
-            <canvas ref={canvasRef} className="" width={window.innerWidth} height={window.innerHeight}> </canvas>
+            <canvas ref={canvasRef} className="cursor-crosshair" width={window.innerWidth} height={window.innerHeight}> </canvas>
             <TopbarComponent selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
         </div>
     )
