@@ -9,7 +9,7 @@ export default function IconButton({
 }) {
     
   return (
-    <div className={`cursor-pointer rounded-full text-white p-2 m-1 hover:bg-black ${activated && "bg-black"} `} onClick={onClick}>
+    <div className={`cursor-pointer rounded-3xl text-white p-2 m-1 hover:bg-[#51518d] ${activated && "bg-[#51518d]"} `} onClick={onClick}>
         {icon} 
     </div>
   )
