@@ -18,6 +18,11 @@ type Shape = {
     startY: number;
     endX: number;
     endY: number;
+} | {
+    type: "diamond";
+    centerX: number;
+    centerY: number;
+    size: number;
 };
 
 export class Game {
@@ -30,7 +35,7 @@ export class Game {
     private startY = 0;
     private lastX = 0;
     private lastY = 0;
-    private selectedTool: Tool = "circle";
+    private selectedTool: Tool = "rect"; // ✅ Default tool is now rect
     socket: WebSocket;
 
     constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket) {
@@ -91,6 +96,15 @@ export class Game {
                 this.ctx.lineTo(shape.endX, shape.endY);
                 this.ctx.stroke();
                 this.ctx.closePath();
+            } else if (shape.type === "diamond") {
+                const { centerX, centerY, size } = shape;
+                this.ctx.beginPath();
+                this.ctx.moveTo(centerX, centerY - size);
+                this.ctx.lineTo(centerX + size, centerY);
+                this.ctx.lineTo(centerX, centerY + size);
+                this.ctx.lineTo(centerX - size, centerY);
+                this.ctx.closePath();
+                this.ctx.stroke();
             }
         });
     }
@@ -105,7 +119,9 @@ export class Game {
     };
 
     mouseUpHandler = (e: MouseEvent) => {
+        if (!this.clicked) return;
         this.clicked = false;
+
         const rect = this.canvas.getBoundingClientRect();
         const currentX = e.clientX - rect.left;
         const currentY = e.clientY - rect.top;
@@ -124,20 +140,27 @@ export class Game {
                 height,
             };
         } else if (selectedTool === "circle") {
-            const radius = Math.max(width, height) / 2;
+            const radius = Math.max(Math.abs(width), Math.abs(height)) / 2;
             shape = {
                 type: "circle",
-                centerX: this.startX + radius,
-                centerY: this.startY + radius,
+                centerX: this.startX + width / 2,
+                centerY: this.startY + height / 2,
                 radius,
             };
-        } else if (selectedTool === "pencil") {
-            return; // already handled in mousemove
+        } else if (selectedTool === "diamond") {
+            const size = Math.min(Math.abs(width), Math.abs(height)) / 2;
+            shape = {
+                type: "diamond",
+                centerX: this.startX + width / 2,
+                centerY: this.startY + height / 2,
+                size,
+            };
         }
 
         if (!shape) return;
 
         this.existingShapes.push(shape);
+        this.clearCanvas();
 
         this.socket.send(
             JSON.stringify({
@@ -157,19 +180,18 @@ export class Game {
         const width = currentX - this.startX;
         const height = currentY - this.startY;
 
-        this.ctx.strokeStyle = "rgba(255, 255, 255)";
         const selectedTool = this.selectedTool;
 
+        this.clearCanvas();
+
         if (selectedTool === "rect") {
-            this.clearCanvas();
             this.ctx.strokeRect(this.startX, this.startY, width, height);
         } else if (selectedTool === "circle") {
-            const radius = Math.max(width, height) / 2;
-            const centerX = this.startX + radius;
-            const centerY = this.startY + radius;
-            this.clearCanvas();
+            const radius = Math.max(Math.abs(width), Math.abs(height)) / 2;
+            const centerX = this.startX + width / 2;
+            const centerY = this.startY + height / 2;
             this.ctx.beginPath();
-            this.ctx.arc(centerX, centerY, Math.abs(radius), 0, Math.PI * 2);
+            this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
             this.ctx.stroke();
             this.ctx.closePath();
         } else if (selectedTool === "pencil") {
@@ -199,6 +221,18 @@ export class Game {
 
             this.lastX = currentX;
             this.lastY = currentY;
+        } else if (selectedTool === "diamond") {
+            const size = Math.min(Math.abs(width), Math.abs(height)) / 2;
+            const centerX = this.startX + width / 2;
+            const centerY = this.startY + height / 2;
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(centerX, centerY - size);
+            this.ctx.lineTo(centerX + size, centerY);
+            this.ctx.lineTo(centerX, centerY + size);
+            this.ctx.lineTo(centerX - size, centerY);
+            this.ctx.closePath();
+            this.ctx.stroke();
         }
     };
 
