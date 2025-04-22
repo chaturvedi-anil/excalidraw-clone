@@ -1,0 +1,22 @@
+# Dockerfile.base
+
+FROM node:18
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
+
+WORKDIR /app
+
+# Copy only essential files first
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY turbo.json ./
+
+# Copy all workspace packages and apps
+COPY apps ./apps
+COPY packages ./packages
+
+# Install dependencies (workspace-aware)
+RUN pnpm install
+
+# Set default command (can be overridden per service)
+CMD ["pnpm", "dev"]
